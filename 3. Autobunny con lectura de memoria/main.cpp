@@ -25,12 +25,23 @@ int main(int argc, char *argv[])
 	// Variables de ventana
 	LPCSTR ventana = "Counter-Strike";
 	HWND cs = FindWindow(0, ventana);
+	if (cs == NULL)
+	{
+		cout << "No se encontró la ventana '" << ventana << "'." << endl;
+		return 1;
+	}
+
 	HANDLE hProcess;
 	DWORD pid;
 
 	// Variables de lectura de memoria
 	GetWindowThreadProcessId(cs, &pid);
 	hProcess = OpenProcess(PROCESS_ALL_ACCESS, true, pid);
+	if (hProcess == NULL)
+	{
+		cout << "Falló al abrir el proceso (pId: " << pid << ")." << endl;
+		return 1;
+	}
 
 	int onGround;
 
