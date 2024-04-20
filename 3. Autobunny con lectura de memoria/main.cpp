@@ -14,6 +14,7 @@ using namespace std;
 
 #define sec1 Sleep(1);
 #define cls system("cls");
+#define VK_F2 0x3C0000 // Con esto redefinimos la tecla q ya existe, "VK_F2" por el hexa de F2
 
 int main(int argc, char *argv[])
 {
@@ -35,16 +36,26 @@ int main(int argc, char *argv[])
 
 	while (1)
 	{
-		ReadProcessMemory(hProcess, (LPVOID)(ENGINE + FL_ONGROUND), &onGround, sizeof(onGround), 0);
-		if (onGround == 0)
+		// Leemos la memoria
+		ReadProcessMemory(hProcess, (LPVOID)(ENGINE + FL_ONGROUND), &onGround, sizeof(onGround), 0); //
+
+		if (GetKeyState(VK_SPACE) & 0x80000)
 		{
-			cout << ">> Saltando <<" << endl;
+			ReadProcessMemory(hProcess, (LPVOID)(ENGINE + FL_ONGROUND), &onGround, sizeof(onGround), 0);
+			if (onGround > 0)
+			{
+				cout << ">> Saltando <<" << endl;
+				ReadProcessMemory(hProcess, (LPVOID)(ENGINE + FL_ONGROUND), &onGround, sizeof(onGround), 0);
+				SendMessage(cs, WM_KEYDOWN, VK_F2, VK_F2);
+				sec1
+					SendMessage(cs, WM_KEYUP, VK_F2, VK_F2);
+				sec1
+			}
 		}
 		else
 		{
-			cout << ">> Suelo " << endl;
+			cout << ">> Esperando activacion por ESPACIO..." << endl;
 		}
-		cls
 	}
 
 	return 0;
