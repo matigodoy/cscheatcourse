@@ -42,6 +42,10 @@ int main(int argc, char *argv[])
 		cout << "Falló al abrir el proceso (pId: " << pid << ")." << endl;
 		return 1;
 	}
+	else
+	{
+		cout << "Proceso abierto correctamente (pId: " << pid << ")." << endl;
+	}
 
 	int onGround;
 
