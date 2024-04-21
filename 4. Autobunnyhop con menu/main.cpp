@@ -28,6 +28,8 @@ int main(int argc, char const *argv[])
     DWORD MENU_STATE = 0x12537C;
     int menuOn = 1;
     int menuOff = 0;
+    DWORD MENU_TEXT = 0x1316D3;
+    char menuText[255] = "Bunnyhop by matiGODoy";
 
     // Dirección suelo
     DWORD FL_ONGROUND = 0x122DF54;
@@ -63,6 +65,8 @@ int main(int argc, char const *argv[])
 
     while (1)
     {
+        WriteProcessMemory(hProcess, (LPVOID)(CLIENT + MENU_TEXT), &menuText, sizeof(menuText), 0); //
+
         if (GetKeyState(VK_F3))
         {
             WriteProcessMemory(hProcess, (LPVOID)(CLIENT + MENU_STATE), &menuOn, sizeof(menuOn), 0); //
