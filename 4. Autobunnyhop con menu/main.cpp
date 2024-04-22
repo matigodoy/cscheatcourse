@@ -1,6 +1,6 @@
 /**
  * Author: Matias Godoy
- * Date: 4/20/2024
+ * Date: 4/21/2024
  * Code: Autobunny con lectura de memoria y HUD
  */
 
@@ -22,14 +22,14 @@ int main(int argc, char const *argv[])
 
     // Dlls
     DWORD CLIENT = 0x28640000;
-    DWORD ENGINE = 0x0A3F0000;
+    DWORD ENGINE = 0x14830000;
 
     // Dirección menú / hud
     DWORD MENU_STATE = 0x12537C;
     int menuOn = 1;
     int menuOff = 0;
     DWORD MENU_TEXT = 0x1316D3;
-    char menuText[255] = "Bunnyhop by matiGODoy";
+    char menuText[255] = ">> Saltando";
 
     // Dirección suelo
     DWORD FL_ONGROUND = 0x122DF54;
@@ -63,20 +63,20 @@ int main(int argc, char const *argv[])
 
     int onGround;
 
+    WriteProcessMemory(hProcess, (LPVOID)(CLIENT + MENU_TEXT), &menuText, sizeof(menuText), 0); // Escribimos el texto en el HUD
+
     while (1)
     {
-        WriteProcessMemory(hProcess, (LPVOID)(CLIENT + MENU_TEXT), &menuText, sizeof(menuText), 0); //
-
-        if (GetKeyState(VK_F3))
-        {
-            WriteProcessMemory(hProcess, (LPVOID)(CLIENT + MENU_STATE), &menuOn, sizeof(menuOn), 0); //
-            cout << ">> Menu activado <<" << endl;
-        }
-        else
-        {
-            WriteProcessMemory(hProcess, (LPVOID)(CLIENT + MENU_STATE), &menuOff, sizeof(menuOff), 0); //
-            cout << ">> Menu desactivado <<" << endl;
-        }
+        // if (GetKeyState(VK_F3))
+        // {
+        //     WriteProcessMemory(hProcess, (LPVOID)(CLIENT + MENU_STATE), &menuOn, sizeof(menuOn), 0); //
+        //     cout << ">> Menu activado <<" << endl;
+        // }
+        // else
+        // {
+        //     WriteProcessMemory(hProcess, (LPVOID)(CLIENT + MENU_STATE), &menuOff, sizeof(menuOff), 0); //
+        //     cout << ">> Menu desactivado <<" << endl;
+        // }
 
         // Leemos la memoria
         ReadProcessMemory(hProcess, (LPVOID)(ENGINE + FL_ONGROUND), &onGround, sizeof(onGround), 0); //
@@ -86,6 +86,7 @@ int main(int argc, char const *argv[])
             ReadProcessMemory(hProcess, (LPVOID)(ENGINE + FL_ONGROUND), &onGround, sizeof(onGround), 0);
             if (onGround > 0)
             {
+                WriteProcessMemory(hProcess, (LPVOID)(CLIENT + MENU_STATE), &menuOn, sizeof(menuOn), 0); // Mostramos el HUD
                 cout << ">> Saltando <<" << endl;
                 ReadProcessMemory(hProcess, (LPVOID)(ENGINE + FL_ONGROUND), &onGround, sizeof(onGround), 0);
                 SendMessage(cs, WM_KEYDOWN, VK_F2, VK_F2);
@@ -96,6 +97,7 @@ int main(int argc, char const *argv[])
         }
         else
         {
+            WriteProcessMemory(hProcess, (LPVOID)(CLIENT + MENU_STATE), &menuOff, sizeof(menuOff), 0); // Ocultamos el HUD
             cout << ">> Esperando activacion por ESPACIO..." << endl;
         }
     }
